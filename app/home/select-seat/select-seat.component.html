@@ -1,0 +1,78 @@
+<GridLayout rows="auto, auto">
+
+    <GridLayout row="0" rowSpan="2" height="100%" rows="50, 100, *, 60, 60,  auto "
+        class="page gradient">
+
+        <GridLayout row="0">
+            <label marginLeft="10" text="&#xf053;" class="fa"
+                verticalAlignment="center" fontSize="20" horizontalAlignment="left"
+                (tap)="navigateBack()" textWrap="true"></label>
+            <StackLayout orientation="horizontal" verticalAlignment="center"
+                horizontalAlignment="center" (tap)="showDialog()">
+                <Label marginLeft="10" class="fa" text="&#xf274;"> </Label>
+                <Label marginLeft="5" text="{{days[selectedDateIndex]}} , {{hours[selectedHoursIndex]}}">
+                </Label>
+                <Label marginLeft="5" class="fa" text="&#xf078;"> </Label>
+            </StackLayout>
+        </GridLayout>
+
+        <Image row="1" src="~/assets/screen.png" height="100%" marginLeft="10"
+            marginRight="10"></Image>
+
+        <GridLayout marginRight="10" marginLeft="10" row="2" rows="*,*,*,*,*,*,*,*,*"
+            columns=" *,*,*,*,*,*,*,*,*">
+
+            <Image *ngFor="let seat of seats" [src]="getSeatImageSource(seat)"
+                [row]="seat.row" stretch="aspectFit" [col]="seat.column"
+                class="seat" (tap)="animateTest($event, seat)"> </Image>
+        </GridLayout>
+
+        <StackLayout height="100%" row="3" orientation="horizontal">
+            <Image marginLeft="10" src="~/assets/seat_available.png" class="seat">
+            </Image>
+            <Label marginLeft="5" verticalAlignment="center" fontWeight="bold"
+                text="Available"></Label>
+            <Image marginLeft="10" src="~/assets/seat_selected.png" class="seat">
+            </Image>
+            <Label marginLeft="5" verticalAlignment="center" fontWeight="bold"
+                text="Selected"></Label>
+            <Image marginLeft="10" src="~/assets/seat_taken.png" class="seat">
+            </Image>
+            <Label marginLeft="5" verticalAlignment="center" fontWeight="bold"
+                text="Taken"></Label>
+
+        </StackLayout>
+
+        <Label row="4" marginLeft="10" text="Total price: {{seatsSelected*5}} €"
+            verticalAlignment="center" fontWeight="bold"></Label>
+
+        <GridLayout row="5" margin="10" backgroundColor="#18cf96" height="70"
+            borderRadius="5" columns="*, auto, 15, auto, *">
+            <Label col="1" verticalAlignment="center" class="fa text-center"
+                fontSize="35" color="#fff" text="&#xf1f0;"></Label>
+            <Label (tap)="selectSeats()" col="3" verticalAlignment="center"
+                fontSize="20" fontWeight="bold" letterSpacing="0.05" color="#fff"
+                text="PAY WITH VISA **78"></Label>
+        </GridLayout>
+    </GridLayout>
+    <label *ngIf="!isDismissed" row="0" rowSpan="2" backgroundColor="#0d131a"
+        opacity="0.6" text="" textWrap="true" (tap)="hideDialog()"></label>
+
+    <GridLayout #selectTimeDialog height="300" rows="50,*, auto" columns="2*,*"
+        class="gradient" verticalAlignment="bottom" row="1">
+        <Label row="0" col="0" colSpan="2" textAlignment="center"
+            horizontalAlignment="center" marginLeft="10" verticalAlignment="center"
+            fontSize="25" text="Select time"></Label>
+
+        <ListPicker height="100%" row="1" col="1" [selectedIndex]="selectedHoursIndex"
+            backgroundColor="transparent" color="white" [items]="hours"
+            (selectedIndexChange)="listPickerHoursIndexChanged($event)" class="picker"></ListPicker>
+        <ListPicker height="100%" row="1" col="0" [selectedIndex]="selectedDateIndex"
+            backgroundColor="transparent" color="white" [items]="days"
+            (selectedIndexChange)="listPickerDateIndexChanged($event)"
+            textAlignment="left" class="picker"></ListPicker>
+        <Button row="2" col="0" colSpan="2" text="CONFIRM TIME" class="fa my-money-button"
+            (tap)="hideDialog()"></Button>
+    </GridLayout>
+
+</GridLayout>

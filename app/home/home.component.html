@@ -1,0 +1,134 @@
+<GridLayout rows="auto, *" backgroundColor="#3f4577">
+    <GridLayout row="0" height="60">
+        <Label verticalAlignment="center" horizontalAlignment="center"
+            fontSize="18" fontWeight="bold" color="#fff" text="Movies"></Label>
+    </GridLayout>
+
+    <!-- master -->
+    <StackLayout row="1">
+        <ListView class="list-group" [items]="movies" (itemTap)="onItemTap($event)"
+            height="100%" backgroundColor="#3f4577" (itemLoading)="onItemLoading($event)">
+            <ng-template let-movie="item" let-i="index">
+                <GridLayout>
+                    <GridLayout margin="5" borderRadius="10" height="250">
+                        <Image [src]="movie.imageSrc" height="100%" width="100%"
+                            stretch="aspectFill" borderRadius="10"></Image>
+                        <Label height="100%" width="100%" backgroundColor="black"
+                            opacity="0.2">
+                        </Label>
+                        <GridLayout rows="auto, auto, *, auto, auto, auto"
+                            columns="auto, *, auto" padding="10" borderRadius="10">
+                            <Label row="0" col="0" class="fa text-left" color="white"
+                                fontSize="35" text="&#xf2d8;"></Label>
+
+                            <Label row="1" col="0" horizontalAlignment="center" class="card--rating" [text]="movie.rating"></Label>
+                            <Label row="3" col="0" colSpan="3" class="card--title"
+                                [text]="movie.title"></Label>
+                            <StackLayout row="4" col="0" colSpan="3"
+                                orientation="horizontal" marginTop="5">
+                                <Label padding="5 15" marginRight="2.5" color="#fff"
+                                    [text]="desc" *ngFor="let desc of movie.descriptions" class="round-corners"></Label>
+                            </StackLayout>
+                            <Label row="5" col="0" colSpan="3" class="card--duration" [text]="movie.duration" marginTop="5"></Label>
+                        </GridLayout>
+                    </GridLayout>
+                </GridLayout>
+            </ng-template>
+        </ListView>
+    </StackLayout>
+
+    <!-- detail -->
+    <AbsoluteLayout row="0" rowSpan="2" [visibility]="isDetail ? 'visible' : 'collapsed'"
+        backgroundColor="rgba(255, 255, 255, 0.2)">
+        <ScrollView top="0" left="0" #scrollView (scroll)="onScroll($event)"
+            height="100%" width="100%">
+            <GridLayout rows="auto, *">
+                <GridLayout row="0" #headerImage verticalAlignment="top"
+                    height="300">
+                    <Image *ngIf="headerImageSrc" verticalAlignment="top"
+                        height="100%" width="100%" [src]="headerImageSrc"
+                        stretch="aspectFill">
+                    </Image>
+                    <GridLayout #headerOverlay rows="auto, *, auto, auto, auto"
+                        columns="auto, *, auto" padding="15 10" height="100%"
+                        style="background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0), #3f4577)">
+                        <Label row="0" col="0" verticalAlignment="center"
+                            class="fa text-left" ios:marginTop="10" color="white"
+                            fontSize="20" text="&#xf053; {{'Back'}}" (tap)="onBack()"></Label>
+                        <Label #playButton row="1" col="0" colSpan="3"
+                            padding="20" class="fa text-center" color="rgba(255, 255, 255, 0.6)"
+                            fontSize="100" text="&#xf01d;" (tap)="openVideoModal()"></Label>
+                        <Label *ngIf="indexSelected >= 0" row="2" col="0"
+                            colSpan="3" color="#fff" fontSize="25" fontWeight="bold"
+                            letterSpacing="0.05" [text]="movies[indexSelected].title"></Label>
+                        <StackLayout *ngIf="indexSelected >= 0" row="3" col="0"
+                            colSpan="3" orientation="horizontal" marginTop="5">
+                            <Label padding="5 15" marginRight="2.5" color="#fff"
+                                [text]="desc" *ngFor="let desc of movies[indexSelected].descriptions"
+                                class="round-corners"></Label>
+                        </StackLayout>
+                        <!--
+                        <Label *ngIf="indexSelected >= 0" row="4" col="0"
+                            colSpan="3" color="#fff" fontSize="15" [text]="movies[indexSelected].duration"
+                            opacity="0.6" marginTop="5"></Label>
+                            -->
+                    </GridLayout>
+                </GridLayout>
+                <StackLayout row="1" ios:marginTop="-20" #detailContent
+                    backgroundColor="#3f4577" padding="10">
+
+                    <GridLayout columns="auto, *, auto">
+                        <Label col="0" textAlignment="left" class="details--title"
+                            text="Synopsis"></Label>
+
+                    </GridLayout>
+                    <Label marginTop="5" class="details--synopsis"
+                        [text]="movies[indexSelected].synopsis" textWrap="true"
+                        letterSpacing="0.02" lineHeight="2"></Label>
+
+                    <Label marginTop="15" textAlignment="left" class="details--title" text="Cast"></Label>
+                    <StackLayout marginTop="5">
+                        <ScrollView orientation="horizontal">
+                            <StackLayout orientation="horizontal">
+                                <GridLayout rows="auto, auto, auto" *ngFor="let cast of movies[indexSelected].cast"
+                                    marginRight="15">
+                                    <Image borderRadius="5%" row="0" [src]="cast.imgSrc"
+                                        height="100" width="90" stretch="aspectFill"></Image>
+                                    <Label row="1" fontSize="14" color="#fff"
+                                        [text]="cast.name"></Label>
+                                    <Label row="2" fontSize="11" color="#fff"
+                                        opacity="0.7" [text]="cast.role"></Label>
+                                </GridLayout>
+                            </StackLayout>
+                        </ScrollView>
+                    </StackLayout>
+                    <GridLayout (tap)="selectSeats()" marginTop="35"
+                        backgroundColor="#18cf96" height="70" borderRadius="5"
+                        columns="*, auto, 15, auto, *">
+                        <Label col="1" verticalAlignment="center" class="fa text-center buy-tickets--icon"
+                            text="&#xf145;"></Label>
+                        <Label col="3" verticalAlignment="center" class="buy-tickets--text"
+                            text="BUY TICKETS"></Label>
+                    </GridLayout>
+                </StackLayout>
+            </GridLayout>
+        </ScrollView>
+        <GridLayout #collapseHeader top="0" left="0" width="100%" height="50"
+            rows="50" columns="70, *, 70" backgroundColor="#3f4577"
+            borderBottomColor="rgba(0,0,0,0.5)" borderBottomWidth="0.5">
+            <Label row="0" col="0" verticalAlignment="center" class="fa text-left collapse-header--back"
+                text="&#xf053;" (tap)="onBackScrolled()" padding="10"></Label>
+            <Label *ngIf="indexSelected >= 0" row="0" col="1"
+                verticalAlignment="center" textAlignment="center" class="collapse-header--title"
+                [text]="movies[indexSelected].title"></Label>
+        </GridLayout>
+    </AbsoluteLayout>
+
+    <GridLayout #videoModal row="0" rowSpan="2" rows="auto, *"
+        backgroundColor="rgba(0,0,0,0.7)">
+        <Label row="0" horizontalAlignment="right" color="#fff" fontSize="20"
+            margin="15" text="close" (tap)="closeVideoModal(vPlayer)"></Label>
+        <VideoPlayer #vPlayer row="1" [src]="trailer" autoplay="true" height="300"></VideoPlayer>
+    </GridLayout>
+
+</GridLayout>
