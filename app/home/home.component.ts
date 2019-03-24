@@ -10,6 +10,9 @@ import { setTimeout, clearInterval } from "timer";
 import { registerElement } from "nativescript-angular/element-registry";
 import { AnimationCurve } from "ui/enums";
 import { RouterExtensions } from 'nativescript-angular/router';
+import { AndroidApplication, AndroidActivityBackPressedEventData } from "application";
+import { isAndroid } from "platform";
+import * as application from "application";
 import { Movie } from '././movie.model';
 import { movies } from '././movies';
 
@@ -100,6 +103,22 @@ export class HomeComponent implements OnInit {
         this.headerOvrly.nativeElement.opacity = 0;
 
         this.videoMdl.nativeElement.visibility = 'collapsed';
+        
+        if (!isAndroid) {
+            return;
+        }
+        application.android.on(AndroidApplication.activityBackPressedEvent, (data: AndroidActivityBackPressedEventData) => {
+            if (this.isDetail) {
+                data.cancel = true;
+                if (this.sv.nativeElement.verticalOffset > 60) {
+                    this.onBackScrolled();
+                    return;
+                }
+                // Scrolling to an offset prevent a bug while going back
+                this.sv.nativeElement.scrollToVerticalOffset(2);
+                this.onBack();
+            }
+        });
     }
 
     onItemLoading(args: any) {
